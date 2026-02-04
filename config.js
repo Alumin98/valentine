@@ -54,5 +54,4 @@ const config = {
     volume: 0.5
   }
 };
-
 window.config = config;

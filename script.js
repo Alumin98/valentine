@@ -29,6 +29,7 @@ const q3No = document.getElementById("q3-no");
 const celebrationTitle = document.getElementById("celebration-title");
 const celebrationMessage = document.getElementById("celebration-message");
 const celebrationEmojis = document.getElementById("celebration-emojis");
+
 const dancingCatContainer = document.getElementById("dancing-cat-container");
 const dancingCat = document.getElementById("dancing-cat");
 const happyMusic = document.getElementById("happy-music");
@@ -151,6 +152,7 @@ const showCelebration = () => {
   celebrationTitle.textContent = config.celebration.title;
   celebrationMessage.textContent = config.celebration.message;
   celebrationEmojis.textContent = config.celebration.emojis;
+
   showSection(sections.celebration);
 
   if (dancingCat && dancingCatContainer) {
