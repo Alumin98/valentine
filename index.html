@@ -3,57 +3,61 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Valentine</title>
+    <title>Will You Be My Valentine? 💝</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="floating-emojis" aria-hidden="true"></div>
+    <div class="floating-elements">
+    </div>
 
-    <main class="container">
-      <section id="question-1" class="card active">
-        <h1 id="q1-text"></h1>
-        <div class="button-row">
-          <button id="q1-yes" class="btn primary"></button>
-          <button id="q1-no" class="btn secondary"></button>
-        </div>
-        <button id="q1-secret" class="secret-option" type="button"></button>
-      </section>
+    <div class="container">
+      <h1 id="valentineTitle"></h1>
 
-      <section id="love-meter" class="card">
-        <h2 id="q2-text"></h2>
-        <button id="love-meter-start" class="btn primary"></button>
-        <div class="meter">
-          <div id="love-meter-fill"></div>
-        </div>
-        <div class="meter-info">
-          <span id="love-meter-value">0%</span>
-          <span id="love-meter-message"></span>
-        </div>
-        <button id="love-meter-next" class="btn secondary"></button>
-      </section>
+      <audio id="buttonSound" preload="auto"></audio>
 
-      <section id="question-3" class="card">
-        <h2 id="q3-text"></h2>
-        <div class="button-row">
-          <button id="q3-yes" class="btn primary"></button>
-          <button id="q3-no" class="btn secondary"></button>
+      <div class="question-section" id="question1">
+        <h2 id="question1Text"></h2>
+        <button class="cute-btn" onclick="moveButton(this)" id="yesBtn1"></button>
+        <button class="cute-btn" onclick="moveButton(this)" id="noBtn1"></button>
+        <div class="secret-answer">
+          <button
+            class="cute-btn special"
+            onclick="showNextQuestion(2)"
+            id="secretAnswerBtn"
+          ></button>
         </div>
-      </section>
+      </div>
 
-      <section id="celebration" class="card">
-        <h2 id="celebration-title"></h2>
-        <p id="celebration-message"></p>
-        <div id="celebration-emojis" class="celebration-emojis"></div>
-        <div id="dancing-cat-container" style="display: none;">
-          <img id="dancing-cat" alt="Dancing cat" />
+      <div class="question-section hidden" id="question2">
+        <h2 id="question2Text"></h2>
+        <div class="love-meter">
+          <input type="range" min="0" max="10000" value="100" class="slider" id="loveMeter" />
+          <p>
+            <span class="love-value-container">
+              <span id="startText"></span> (<span id="loveValue">100</span>%)
+            </span>
+            <span id="extraLove" class="hidden"></span>
+          </p>
         </div>
-        <button id="happy-music-play-btn" class="btn primary" style="display: none;">
-          ▶ Play the happy song
-        </button>
-      </section>
-    </main>
+        <button class="cute-btn" onclick="showNextQuestion(3)" id="nextBtn"></button>
+      </div>
 
-    <audio id="happy-music"></audio>
+      <div class="question-section hidden" id="question3">
+        <h2 id="question3Text"></h2>
+        <button class="cute-btn final-yes" onclick="celebrate()" id="yesBtn3"></button>
+        <button class="cute-btn" onclick="moveButton(this)" id="noBtn3"></button>
+      </div>
+
+      <div class="celebration hidden" id="celebration">
+        <h2 id="celebrationTitle"></h2>
+        <p class="celebration-text" id="celebrationMessage"></p>
+        <p class="celebration-text" id="celebrationEmojis"></p>
+      </div>
+    </div>
 
     <script src="config.js"></script>
     <script src="theme.js"></script>

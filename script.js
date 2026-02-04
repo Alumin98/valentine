@@ -1,202 +1,242 @@
-const state = {
-  loveMeterValue: 0,
-  loveMeterTimer: null
-};
+// Initialize configuration
+const config = window.VALENTINE_CONFIG;
 
-const sections = {
-  question1: document.getElementById("question-1"),
-  loveMeter: document.getElementById("love-meter"),
-  question3: document.getElementById("question-3"),
-  celebration: document.getElementById("celebration")
-};
+// Validate configuration
+function validateConfig() {
+  const warnings = [];
 
-const q1Text = document.getElementById("q1-text");
-const q1Yes = document.getElementById("q1-yes");
-const q1No = document.getElementById("q1-no");
-const q1Secret = document.getElementById("q1-secret");
-
-const q2Text = document.getElementById("q2-text");
-const loveMeterStart = document.getElementById("love-meter-start");
-const loveMeterNext = document.getElementById("love-meter-next");
-const loveMeterFill = document.getElementById("love-meter-fill");
-const loveMeterValue = document.getElementById("love-meter-value");
-const loveMeterMessage = document.getElementById("love-meter-message");
-
-const q3Text = document.getElementById("q3-text");
-const q3Yes = document.getElementById("q3-yes");
-const q3No = document.getElementById("q3-no");
-
-const celebrationTitle = document.getElementById("celebration-title");
-const celebrationMessage = document.getElementById("celebration-message");
-const celebrationEmojis = document.getElementById("celebration-emojis");
-const dancingCatContainer = document.getElementById("dancing-cat-container");
-const dancingCat = document.getElementById("dancing-cat");
-const happyMusic = document.getElementById("happy-music");
-const happyMusicPlayBtn = document.getElementById("happy-music-play-btn");
-
-const floatingEmojisContainer = document.getElementById("floating-emojis");
-
-const showSection = (sectionToShow) => {
-  Object.values(sections).forEach((section) => {
-    section.classList.remove("active");
-  });
-  sectionToShow.classList.add("active");
-};
-
-const setShake = (element) => {
-  element.classList.remove("shake");
-  void element.offsetWidth;
-  element.classList.add("shake");
-};
-
-const moveButtonRandomly = (button) => {
-  const offsetX = Math.random() * 120 - 60;
-  const offsetY = Math.random() * 60 - 30;
-  button.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-};
-
-const setupFloatingEmojis = () => {
-  floatingEmojisContainer.innerHTML = "";
-  const emojiList = config.floatingEmojis || [];
-  emojiList.forEach((emoji, index) => {
-    const span = document.createElement("span");
-    span.textContent = emoji;
-    span.style.left = `${(index * 37) % 100}%`;
-    span.style.animationDelay = `${index * 0.8}s`;
-    span.style.animationDuration = `${10 + (index % 5)}s`;
-    floatingEmojisContainer.appendChild(span);
-  });
-};
-
-const setupQuestion1 = () => {
-  q1Text.textContent = config.questions.first.text;
-  q1Yes.textContent = config.questions.first.yesBtn;
-  q1No.textContent = config.questions.first.noBtn;
-  q1Secret.textContent = config.questions.first.secretAnswer;
-
-  q1Yes.addEventListener("click", () => {
-    setShake(sections.question1);
-  });
-
-  q1No.addEventListener("mouseenter", () => {
-    moveButtonRandomly(q1No);
-  });
-
-  q1No.addEventListener("click", () => {
-    setShake(sections.question1);
-    moveButtonRandomly(q1No);
-  });
-
-  q1Secret.addEventListener("click", () => {
-    showSection(sections.loveMeter);
-  });
-};
-
-const updateLoveMeter = () => {
-  loveMeterFill.style.width = `${Math.min(state.loveMeterValue, 160)}%`;
-  loveMeterValue.textContent = `${state.loveMeterValue}%`;
-
-  if (state.loveMeterValue >= 150) {
-    loveMeterMessage.textContent = config.loveMessages.extreme;
-  } else if (state.loveMeterValue >= 130) {
-    loveMeterMessage.textContent = config.loveMessages.high;
-  } else if (state.loveMeterValue > 100) {
-    loveMeterMessage.textContent = config.loveMessages.normal;
-  } else {
-    loveMeterMessage.textContent = "";
-  }
-};
-
-const startLoveMeter = () => {
-  if (state.loveMeterTimer) {
-    return;
+  if (!config.valentineName) {
+    warnings.push("Valentine's name is not set! Using default.");
+    config.valentineName = "My Love";
   }
 
-  state.loveMeterTimer = window.setInterval(() => {
-    state.loveMeterValue += 5;
-    if (state.loveMeterValue > 160) {
-      clearInterval(state.loveMeterTimer);
-      state.loveMeterTimer = null;
+  const isValidHex = (hex) => /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+  Object.entries(config.colors).forEach(([key, value]) => {
+    if (!isValidHex(value)) {
+      warnings.push(`Invalid color for ${key}! Using default.`);
+      config.colors[key] = getDefaultColor(key);
     }
-    updateLoveMeter();
-  }, 200);
-};
-
-const setupQuestion2 = () => {
-  q2Text.textContent = config.questions.second.text;
-  loveMeterStart.textContent = config.questions.second.startText;
-  loveMeterNext.textContent = config.questions.second.nextBtn;
-
-  loveMeterStart.addEventListener("click", startLoveMeter);
-  loveMeterNext.addEventListener("click", () => {
-    showSection(sections.question3);
-  });
-};
-
-const setupQuestion3 = () => {
-  q3Text.textContent = config.questions.third.text;
-  q3Yes.textContent = config.questions.third.yesBtn;
-  q3No.textContent = config.questions.third.noBtn;
-
-  q3No.addEventListener("mouseenter", () => {
-    moveButtonRandomly(q3No);
   });
 
-  q3Yes.addEventListener("click", () => {
-    showCelebration();
-  });
-};
-
-const showCelebration = () => {
-  celebrationTitle.textContent = config.celebration.title;
-  celebrationMessage.textContent = config.celebration.message;
-  celebrationEmojis.textContent = config.celebration.emojis;
-  showSection(sections.celebration);
-
-  if (dancingCat && dancingCatContainer) {
-    dancingCat.src = config.celebrationExtras.catGifUrl;
-    dancingCatContainer.style.display = "flex";
+  if (parseFloat(config.animations.floatDuration) < 5) {
+    warnings.push("Float duration too short! Setting to 5s minimum.");
+    config.animations.floatDuration = "5s";
   }
 
-  if (happyMusic) {
-    happyMusic.src = config.celebrationExtras.happyMusicUrl;
-    happyMusic.volume = config.celebrationExtras.musicVolume;
-    happyMusic
-      .play()
-      .then(() => {
-        if (happyMusicPlayBtn) {
-          happyMusicPlayBtn.style.display = "none";
-        }
-      })
-      .catch(() => {
-        if (happyMusicPlayBtn) {
-          happyMusicPlayBtn.style.display = "inline-block";
-          happyMusicPlayBtn.onclick = () => {
-            happyMusic.play();
-          };
-        }
-      });
+  if (config.animations.heartExplosionSize < 1 || config.animations.heartExplosionSize > 3) {
+    warnings.push("Heart explosion size should be between 1 and 3! Using default.");
+    config.animations.heartExplosionSize = 1.5;
   }
-};
 
-const setupCelebration = () => {
-  celebrationTitle.textContent = config.celebration.title;
-  celebrationMessage.textContent = config.celebration.message;
-  celebrationEmojis.textContent = config.celebration.emojis;
-};
+  if (warnings.length > 0) {
+    console.warn("⚠️ Configuration Warnings:");
+    warnings.forEach((warning) => console.warn(`- ${warning}`));
+  }
+}
 
-const setupGlobalMusic = () => {
-  if (!config.music.enabled) {
+// Default color values
+function getDefaultColor(key) {
+  const defaults = {
+    backgroundStart: "#ffafbd",
+    backgroundEnd: "#ffc3a0",
+    buttonBackground: "#ff6b6b",
+    buttonHover: "#ff8787",
+    textColor: "#ff4757"
+  };
+  return defaults[key];
+}
+
+document.title = config.pageTitle;
+
+// Initialize the page content when DOM is loaded
+window.addEventListener("DOMContentLoaded", () => {
+  validateConfig();
+
+  document.getElementById("valentineTitle").textContent = `${config.valentineName}, baby...`;
+
+  document.getElementById("question1Text").textContent = config.questions.first.text;
+  document.getElementById("yesBtn1").textContent = config.questions.first.yesBtn;
+  document.getElementById("noBtn1").textContent = config.questions.first.noBtn;
+  document.getElementById("secretAnswerBtn").textContent = config.questions.first.secretAnswer;
+
+  document.getElementById("question2Text").textContent = config.questions.second.text;
+  document.getElementById("startText").textContent = config.questions.second.startText;
+  document.getElementById("nextBtn").textContent = config.questions.second.nextBtn;
+
+  document.getElementById("question3Text").textContent = config.questions.third.text;
+  document.getElementById("yesBtn3").textContent = config.questions.third.yesBtn;
+  document.getElementById("noBtn3").textContent = config.questions.third.noBtn;
+
+  setupButtonSound();
+  createFloatingElements();
+});
+
+// Create floating hearts and bears
+function createFloatingElements() {
+  const container = document.querySelector(".floating-elements");
+
+  config.floatingEmojis.hearts.forEach((heart) => {
+    const div = document.createElement("div");
+    div.className = "heart";
+    div.innerHTML = heart;
+    setRandomPosition(div);
+    container.appendChild(div);
+  });
+
+  config.floatingEmojis.bears.forEach((bear) => {
+    const div = document.createElement("div");
+    div.className = "bear";
+    div.innerHTML = bear;
+    setRandomPosition(div);
+    container.appendChild(div);
+  });
+}
+
+// Set random position for floating elements
+function setRandomPosition(element) {
+  element.style.left = `${Math.random() * 100}vw`;
+  element.style.animationDelay = `${Math.random() * 5}s`;
+  element.style.animationDuration = `${10 + Math.random() * 20}s`;
+}
+
+const buttonSound = document.getElementById("buttonSound");
+const yesBtn1 = document.getElementById("yesBtn1");
+const noBtn1 = document.getElementById("noBtn1");
+let audioContext;
+
+function setupButtonSound() {
+  if (!buttonSound) {
     return;
   }
-};
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.title = config.pageTitle;
-  setupFloatingEmojis();
-  setupQuestion1();
-  setupQuestion2();
-  setupQuestion3();
-  setupCelebration();
-  setupGlobalMusic();
+  if (config.buttonSound?.url) {
+    buttonSound.src = config.buttonSound.url;
+  }
+
+  buttonSound.volume = config.buttonSound?.volume ?? 0.8;
+
+  [yesBtn1, noBtn1].forEach((button) => {
+    if (!button) {
+      return;
+    }
+    button.addEventListener("click", playButtonSound);
+  });
+}
+
+function playButtonSound() {
+  if (buttonSound && buttonSound.src) {
+    buttonSound.currentTime = 0;
+    buttonSound.play().catch(() => {
+      playFallbackBoom();
+    });
+    return;
+  }
+
+  playFallbackBoom();
+}
+
+function playFallbackBoom() {
+  if (!window.AudioContext && !window.webkitAudioContext) {
+    return;
+  }
+
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(120, audioContext.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(40, audioContext.currentTime + 0.4);
+  gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.45);
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.5);
+}
+
+// Function to show next question
+function showNextQuestion(questionNumber) {
+  document.querySelectorAll(".question-section").forEach((q) => q.classList.add("hidden"));
+  document.getElementById(`question${questionNumber}`).classList.remove("hidden");
+}
+
+// Function to move the "No" button when clicked
+function moveButton(button) {
+  const x = Math.random() * (window.innerWidth - button.offsetWidth);
+  const y = Math.random() * (window.innerHeight - button.offsetHeight);
+  button.style.position = "fixed";
+  button.style.left = `${x}px`;
+  button.style.top = `${y}px`;
+}
+
+// Love meter functionality
+const loveMeter = document.getElementById("loveMeter");
+const loveValue = document.getElementById("loveValue");
+const extraLove = document.getElementById("extraLove");
+
+function setInitialPosition() {
+  loveMeter.value = 100;
+  loveValue.textContent = 100;
+  loveMeter.style.width = "100%";
+}
+
+loveMeter.addEventListener("input", () => {
+  const value = parseInt(loveMeter.value, 10);
+  loveValue.textContent = value;
+
+  if (value > 100) {
+    extraLove.classList.remove("hidden");
+    const overflowPercentage = (value - 100) / 9900;
+    const extraWidth = overflowPercentage * window.innerWidth * 0.8;
+    loveMeter.style.width = `calc(100% + ${extraWidth}px)`;
+    loveMeter.style.transition = "width 0.3s";
+
+    if (value >= 5000) {
+      extraLove.classList.add("super-love");
+      extraLove.textContent = config.loveMessages.extreme;
+    } else if (value > 1000) {
+      extraLove.classList.remove("super-love");
+      extraLove.textContent = config.loveMessages.high;
+    } else {
+      extraLove.classList.remove("super-love");
+      extraLove.textContent = config.loveMessages.normal;
+    }
+  } else {
+    extraLove.classList.add("hidden");
+    extraLove.classList.remove("super-love");
+    loveMeter.style.width = "100%";
+  }
 });
+
+// Initialize love meter
+window.addEventListener("DOMContentLoaded", setInitialPosition);
+window.addEventListener("load", setInitialPosition);
+
+// Celebration function
+function celebrate() {
+  document.querySelectorAll(".question-section").forEach((q) => q.classList.add("hidden"));
+  const celebration = document.getElementById("celebration");
+  celebration.classList.remove("hidden");
+
+  document.getElementById("celebrationTitle").textContent = config.celebration.title;
+  document.getElementById("celebrationMessage").textContent = config.celebration.message;
+  document.getElementById("celebrationEmojis").textContent = config.celebration.emojis;
+
+  createHeartExplosion();
+}
+
+// Create heart explosion animation
+function createHeartExplosion() {
+  for (let i = 0; i < 50; i += 1) {
+    const heart = document.createElement("div");
+    const randomHeart =
+      config.floatingEmojis.hearts[Math.floor(Math.random() * config.floatingEmojis.hearts.length)];
+    heart.innerHTML = randomHeart;
+    heart.className = "heart";
+    document.querySelector(".floating-elements").appendChild(heart);
+    setRandomPosition(heart);
+  }
+}
