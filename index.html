@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Valentine for Baby 💘</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="floating-hearts"></div>
+
+  <main class="card">
+    <!-- STEP 1 -->
+    <section id="step-1" class="step active">
+      <h1>Hi, <span class="name">Fatemeh Shokri</span> 💘</h1>
+      <p class="subtitle">
+        I made a little website for you, baby.
+      </p>
+
+      <h2 class="question">
+        Do you like being bothered all the time?
+      </h2>
+
+      <div class="buttons-row">
+        <button id="btn-not-really" class="btn">Not Really</button>
+        <button id="btn-no" class="btn btn-outline">NO</button>
+      </div>
+
+      <button id="btn-secret-yes" class="secret-button">
+        ...yes 👀
+      </button>
+
+      <p id="step-1-message" class="hint"></p>
+    </section>
+
+    <!-- STEP 2 – LOVE METER -->
+    <section id="step-2" class="step">
+      <h2 class="question">
+        How much do you love me, baby?
+      </h2>
+      <p class="subtitle">Move the slider 👇</p>
+
+      <div class="love-meter">
+        <input id="love-slider" type="range" min="0" max="100" value="0" />
+        <div class="love-meter-bar">
+          <div id="love-fill"></div>
+        </div>
+      </div>
+
+      <p id="love-message" class="hint"></p>
+
+      <button id="btn-to-step-3" class="btn primary">
+        Next ❤️
+      </button>
+    </section>
+
+    <!-- STEP 3 – FINAL QUESTION -->
+    <section id="step-3" class="step">
+      <h2 class="question">
+        Baby, will you be my Valentine?
+      </h2>
+
+      <div class="buttons-row">
+        <button id="btn-final-yes" class="btn primary">
+          Yes, of course! 💘
+        </button>
+        <button id="btn-final-no" class="btn btn-outline runaway">
+          No 😈
+        </button>
+      </div>
+    </section>
+
+    <!-- FINAL SCREEN -->
+    <section id="step-final" class="step">
+      <h1>Baby said YES! 💕</h1>
+      <p class="subtitle">
+        You’re stuck with me now, baby. Get ready to be bothered forever. 😈
+      </p>
+
+      <div id="cat-wrapper">
+        <img
+          id="cat-gif"
+          alt="Happy happy happy dancing cat"
+        />
+      </div>
+
+      <!-- Happy Happy Happy music – only plays on this screen -->
+      <audio id="happy-audio" preload="auto">
+        <!-- REPLACE THIS SRC with your hosted MP3 URL -->
+        <source
+          src="https://www.myinstants.com/en/instant/happy-happy-happy-cat-17367/?utm_source=copy&utm_medium=share"
+          type="audio/mpeg"
+        />
+      </audio>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
