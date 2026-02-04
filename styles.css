@@ -1,210 +1,164 @@
-*,
-*::before,
-*::after {
+:root {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+}
+
+* {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
+  margin: 0;
   min-height: 100vh;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  color: #4a2c2a;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #ffafbd, #ffc3a0);
-  color: #3a1b1b;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
-/* Floating hearts background */
-.floating-hearts::before,
-.floating-hearts::after {
-  content: "❤️ 💕 💖 💗 💓";
-  position: fixed;
-  left: 50%;
-  top: 100%;
-  transform: translateX(-50%);
-  font-size: 2rem;
-  animation: floatUp 18s linear infinite;
-  opacity: 0.8;
-}
-
-.floating-hearts::after {
-  animation-duration: 25s;
-  animation-delay: 3s;
-  opacity: 0.6;
-}
-
-@keyframes floatUp {
-  0% {
-    transform: translate(-50%, 0%);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.7;
-  }
-  100% {
-    transform: translate(-50%, -130%);
-    opacity: 0;
-  }
-}
-
-/* Main card */
-.card {
+.container {
+  width: min(90vw, 520px);
+  padding: 24px;
   position: relative;
   z-index: 1;
-  width: min(480px, 100%);
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 24px;
-  padding: 32px 24px 28px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.1);
-  text-align: center;
 }
 
-/* Steps */
-.step {
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 28px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 18px 40px rgba(255, 77, 109, 0.2);
   display: none;
 }
 
-.step.active {
+.card.active {
   display: block;
 }
 
-h1 {
-  font-size: 1.9rem;
-  margin-bottom: 8px;
-}
-
-.name {
-  color: #ff3b6f;
-}
-
-.subtitle {
-  font-size: 0.95rem;
-  margin-bottom: 18px;
-  color: #7a4c4c;
-}
-
-.question {
-  font-size: 1.3rem;
-  margin-bottom: 18px;
-}
-
-.buttons-row {
+.button-row {
   display: flex;
+  gap: 16px;
   justify-content: center;
-  gap: 10px;
-  margin-top: 8px;
   flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 .btn {
   border: none;
-  padding: 10px 18px;
+  padding: 12px 24px;
   border-radius: 999px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   cursor: pointer;
-  background: #ff6b81;
-  color: #fff;
-  transition: transform 0.06s ease, box-shadow 0.06s ease, background 0.15s;
-  box-shadow: 0 4px 12px rgba(255, 107, 129, 0.4);
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(255, 107, 129, 0.5);
-  background: #ff4f6b;
-}
-
-.btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 6px rgba(255, 107, 129, 0.4);
-}
-
-.btn-outline {
-  background: transparent;
-  color: #ff3b6f;
-  border: 1px solid #ff9aa2;
-  box-shadow: none;
-}
-
-.btn-outline:hover {
-  background: rgba(255, 182, 193, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn.primary {
-  margin-top: 16px;
+  background: #ff4d6d;
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
 }
 
-/* Secret button */
-.secret-button {
-  margin-top: 18px;
+.btn.secondary {
+  background: #fff0f6;
+  color: #ff4d6d;
+  border: 2px solid #ff4d6d;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.secret-option {
+  margin-top: 28px;
+  background: transparent;
   border: none;
-  background: none;
-  color: #b34a6b;
-  font-size: 0.9rem;
+  color: rgba(74, 44, 42, 0.6);
+  font-size: 0.85rem;
   cursor: pointer;
-  text-decoration: underline dotted;
-  opacity: 0.7;
+  text-decoration: underline;
 }
 
-.secret-button:hover {
-  opacity: 1;
-}
-
-/* Hint text */
-.hint {
-  margin-top: 12px;
-  font-size: 0.9rem;
-  color: #a13f5c;
-}
-
-/* Love meter */
-.love-meter {
+.meter {
+  height: 16px;
+  background: #ffe0e8;
+  border-radius: 999px;
+  overflow: hidden;
   margin: 20px 0 12px;
 }
 
-#love-slider {
-  width: 100%;
-}
-
-.love-meter-bar {
-  margin-top: 8px;
-  width: 100%;
-  height: 10px;
-  border-radius: 999px;
-  background: #ffe5eb;
-  overflow: hidden;
-}
-
-#love-fill {
+#love-meter-fill {
   height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #ff6b81, #ffafbd);
-  transition: width 0.15s ease-out;
+  width: 0;
+  background: linear-gradient(90deg, #ff4d6d, #ff8fab);
+  transition: width 0.3s ease;
 }
 
-/* Runaway button */
-.runaway {
-  position: relative;
-}
-
-/* Final screen */
-#cat-wrapper {
-  margin-top: 22px;
+.meter-info {
   display: flex;
   justify-content: center;
+  gap: 12px;
+  font-weight: 600;
 }
 
-#cat-gif {
-  max-width: 220px;
+#celebration-emojis {
+  font-size: 2rem;
+  margin-top: 16px;
+}
+
+#floating-emojis span {
+  position: absolute;
+  font-size: 24px;
+  opacity: 0.8;
+  animation: float-up 12s linear infinite;
+}
+
+@keyframes float-up {
+  from {
+    transform: translateY(100vh) translateX(0);
+  }
+  to {
+    transform: translateY(-10vh) translateX(30px);
+  }
+}
+
+.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+#dancing-cat-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#dancing-cat {
+  width: 200px;
   height: auto;
-  animation: cat-bounce 0.6s ease-in-out infinite alternate;
+  animation: cat-dance 0.8s infinite alternate;
 }
 
-@keyframes cat-bounce {
+@keyframes cat-dance {
   from {
     transform: translateY(0);
   }
@@ -213,18 +167,12 @@ h1 {
   }
 }
 
-/* Small screens */
 @media (max-width: 480px) {
   .card {
-    border-radius: 18px;
-    padding: 24px 16px 20px;
+    padding: 20px;
   }
 
-  h1 {
-    font-size: 1.6rem;
-  }
-
-  .question {
-    font-size: 1.15rem;
+  .btn {
+    width: 100%;
   }
 }

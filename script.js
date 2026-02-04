@@ -1,138 +1,202 @@
-// SIMPLE FLOW:
-// step-1 -> step-2 -> step-3 -> step-final
+const state = {
+  loveMeterValue: 0,
+  loveMeterTimer: null
+};
 
-function showStep(id) {
-  document.querySelectorAll(".step").forEach((s) => {
-    s.classList.remove("active");
+const sections = {
+  question1: document.getElementById("question-1"),
+  loveMeter: document.getElementById("love-meter"),
+  question3: document.getElementById("question-3"),
+  celebration: document.getElementById("celebration")
+};
+
+const q1Text = document.getElementById("q1-text");
+const q1Yes = document.getElementById("q1-yes");
+const q1No = document.getElementById("q1-no");
+const q1Secret = document.getElementById("q1-secret");
+
+const q2Text = document.getElementById("q2-text");
+const loveMeterStart = document.getElementById("love-meter-start");
+const loveMeterNext = document.getElementById("love-meter-next");
+const loveMeterFill = document.getElementById("love-meter-fill");
+const loveMeterValue = document.getElementById("love-meter-value");
+const loveMeterMessage = document.getElementById("love-meter-message");
+
+const q3Text = document.getElementById("q3-text");
+const q3Yes = document.getElementById("q3-yes");
+const q3No = document.getElementById("q3-no");
+
+const celebrationTitle = document.getElementById("celebration-title");
+const celebrationMessage = document.getElementById("celebration-message");
+const celebrationEmojis = document.getElementById("celebration-emojis");
+const dancingCatContainer = document.getElementById("dancing-cat-container");
+const dancingCat = document.getElementById("dancing-cat");
+const happyMusic = document.getElementById("happy-music");
+const happyMusicPlayBtn = document.getElementById("happy-music-play-btn");
+
+const floatingEmojisContainer = document.getElementById("floating-emojis");
+
+const showSection = (sectionToShow) => {
+  Object.values(sections).forEach((section) => {
+    section.classList.remove("active");
   });
-  const el = document.getElementById(id);
-  if (el) el.classList.add("active");
-}
+  sectionToShow.classList.add("active");
+};
+
+const setShake = (element) => {
+  element.classList.remove("shake");
+  void element.offsetWidth;
+  element.classList.add("shake");
+};
+
+const moveButtonRandomly = (button) => {
+  const offsetX = Math.random() * 120 - 60;
+  const offsetY = Math.random() * 60 - 30;
+  button.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+};
+
+const setupFloatingEmojis = () => {
+  floatingEmojisContainer.innerHTML = "";
+  const emojiList = config.floatingEmojis || [];
+  emojiList.forEach((emoji, index) => {
+    const span = document.createElement("span");
+    span.textContent = emoji;
+    span.style.left = `${(index * 37) % 100}%`;
+    span.style.animationDelay = `${index * 0.8}s`;
+    span.style.animationDuration = `${10 + (index % 5)}s`;
+    floatingEmojisContainer.appendChild(span);
+  });
+};
+
+const setupQuestion1 = () => {
+  q1Text.textContent = config.questions.first.text;
+  q1Yes.textContent = config.questions.first.yesBtn;
+  q1No.textContent = config.questions.first.noBtn;
+  q1Secret.textContent = config.questions.first.secretAnswer;
+
+  q1Yes.addEventListener("click", () => {
+    setShake(sections.question1);
+  });
+
+  q1No.addEventListener("mouseenter", () => {
+    moveButtonRandomly(q1No);
+  });
+
+  q1No.addEventListener("click", () => {
+    setShake(sections.question1);
+    moveButtonRandomly(q1No);
+  });
+
+  q1Secret.addEventListener("click", () => {
+    showSection(sections.loveMeter);
+  });
+};
+
+const updateLoveMeter = () => {
+  loveMeterFill.style.width = `${Math.min(state.loveMeterValue, 160)}%`;
+  loveMeterValue.textContent = `${state.loveMeterValue}%`;
+
+  if (state.loveMeterValue >= 150) {
+    loveMeterMessage.textContent = config.loveMessages.extreme;
+  } else if (state.loveMeterValue >= 130) {
+    loveMeterMessage.textContent = config.loveMessages.high;
+  } else if (state.loveMeterValue > 100) {
+    loveMeterMessage.textContent = config.loveMessages.normal;
+  } else {
+    loveMeterMessage.textContent = "";
+  }
+};
+
+const startLoveMeter = () => {
+  if (state.loveMeterTimer) {
+    return;
+  }
+
+  state.loveMeterTimer = window.setInterval(() => {
+    state.loveMeterValue += 5;
+    if (state.loveMeterValue > 160) {
+      clearInterval(state.loveMeterTimer);
+      state.loveMeterTimer = null;
+    }
+    updateLoveMeter();
+  }, 200);
+};
+
+const setupQuestion2 = () => {
+  q2Text.textContent = config.questions.second.text;
+  loveMeterStart.textContent = config.questions.second.startText;
+  loveMeterNext.textContent = config.questions.second.nextBtn;
+
+  loveMeterStart.addEventListener("click", startLoveMeter);
+  loveMeterNext.addEventListener("click", () => {
+    showSection(sections.question3);
+  });
+};
+
+const setupQuestion3 = () => {
+  q3Text.textContent = config.questions.third.text;
+  q3Yes.textContent = config.questions.third.yesBtn;
+  q3No.textContent = config.questions.third.noBtn;
+
+  q3No.addEventListener("mouseenter", () => {
+    moveButtonRandomly(q3No);
+  });
+
+  q3Yes.addEventListener("click", () => {
+    showCelebration();
+  });
+};
+
+const showCelebration = () => {
+  celebrationTitle.textContent = config.celebration.title;
+  celebrationMessage.textContent = config.celebration.message;
+  celebrationEmojis.textContent = config.celebration.emojis;
+  showSection(sections.celebration);
+
+  if (dancingCat && dancingCatContainer) {
+    dancingCat.src = config.celebrationExtras.catGifUrl;
+    dancingCatContainer.style.display = "flex";
+  }
+
+  if (happyMusic) {
+    happyMusic.src = config.celebrationExtras.happyMusicUrl;
+    happyMusic.volume = config.celebrationExtras.musicVolume;
+    happyMusic
+      .play()
+      .then(() => {
+        if (happyMusicPlayBtn) {
+          happyMusicPlayBtn.style.display = "none";
+        }
+      })
+      .catch(() => {
+        if (happyMusicPlayBtn) {
+          happyMusicPlayBtn.style.display = "inline-block";
+          happyMusicPlayBtn.onclick = () => {
+            happyMusic.play();
+          };
+        }
+      });
+  }
+};
+
+const setupCelebration = () => {
+  celebrationTitle.textContent = config.celebration.title;
+  celebrationMessage.textContent = config.celebration.message;
+  celebrationEmojis.textContent = config.celebration.emojis;
+};
+
+const setupGlobalMusic = () => {
+  if (!config.music.enabled) {
+    return;
+  }
+};
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Start at step 1
-  showStep("step-1");
-
-  // STEP 1 BUTTONS
-  const btnNotReally = document.getElementById("btn-not-really");
-  const btnNo = document.getElementById("btn-no");
-  const btnSecretYes = document.getElementById("btn-secret-yes");
-  const step1Msg = document.getElementById("step-1-message");
-
-  if (btnNotReally) {
-    btnNotReally.addEventListener("click", () => {
-      step1Msg.textContent = "That’s okay… I’ll still bother you anyway 😈";
-    });
-  }
-
-  if (btnNo) {
-    btnNo.addEventListener("click", () => {
-      step1Msg.textContent =
-        "Lies. Pure lies. Try looking a bit lower on the screen… 👇";
-      jiggleButton(btnNo);
-    });
-  }
-
-  if (btnSecretYes) {
-    btnSecretYes.addEventListener("click", () => {
-      showStep("step-2");
-    });
-  }
-
-  // STEP 2 – LOVE METER
-  const slider = document.getElementById("love-slider");
-  const loveFill = document.getElementById("love-fill");
-  const loveMsg = document.getElementById("love-message");
-  const btnToStep3 = document.getElementById("btn-to-step-3");
-
-  if (slider && loveFill) {
-    slider.addEventListener("input", () => {
-      const val = Number(slider.value);
-      loveFill.style.width = val + "%";
-
-      // Messages:
-      // 0 = nothing
-      // 1–40 = "hmmm"
-      // 41–80 = "Ohhhh"
-      // 81–100 = "Ohhhhhhh NOH"
-      if (val === 0) {
-        loveMsg.textContent = "";
-      } else if (val <= 40) {
-        loveMsg.textContent = "hmmm 🤨";
-      } else if (val <= 80) {
-        loveMsg.textContent = "Ohhhh 👀";
-      } else {
-        loveMsg.textContent = "Ohhhhhhh NOH 😂";
-      }
-    });
-  }
-
-  if (btnToStep3) {
-    btnToStep3.addEventListener("click", () => {
-      showStep("step-3");
-    });
-  }
-
-  // STEP 3 – FINAL QUESTION
-  const btnFinalYes = document.getElementById("btn-final-yes");
-  const btnFinalNo = document.getElementById("btn-final-no");
-
-  if (btnFinalYes) {
-    btnFinalYes.addEventListener("click", () => {
-      showFinalScreen();
-    });
-  }
-
-  if (btnFinalNo) {
-    btnFinalNo.addEventListener("mousemove", (e) => {
-      // Run away from cursor
-      const btn = e.currentTarget;
-      const moveX = (Math.random() - 0.5) * 200;
-      const moveY = (Math.random() - 0.5) * 120;
-      btn.style.transform = `translate(${moveX}px, ${moveY}px)`;
-    });
-
-    btnFinalNo.addEventListener("click", () => {
-      jiggleButton(btnFinalNo);
-    });
-  }
-
-  // FINAL SCREEN – setup cat GIF + music
-  function showFinalScreen() {
-    showStep("step-final");
-
-    const catImg = document.getElementById("cat-gif");
-    const audio = document.getElementById("happy-audio");
-
-    // 👉 Replace this URL with the actual GIF URL you copy from Tenor
-    const HAPPY_CAT_GIF_URL =
-      "https://tenor.com/view/cat-kitty-kitten-cat-meme-happy-cat-gif-18016892455935037863";
-
-    if (catImg) {
-      catImg.src = HAPPY_CAT_GIF_URL;
-    }
-
-    if (audio) {
-      // Restart and play only on final YES
-      audio.currentTime = 0;
-      audio
-        .play()
-        .catch(() => {
-          // If browser blocks autoplay, we just silently fail (user already interacted anyway)
-        });
-    }
-  }
+  document.title = config.pageTitle;
+  setupFloatingEmojis();
+  setupQuestion1();
+  setupQuestion2();
+  setupQuestion3();
+  setupCelebration();
+  setupGlobalMusic();
 });
-
-// Little wiggle animation for buttons
-function jiggleButton(btn) {
-  if (!btn) return;
-  btn.style.transition = "transform 0.1s";
-  btn.style.transform = "translateX(-4px)";
-  setTimeout(() => {
-    btn.style.transform = "translateX(4px)";
-    setTimeout(() => {
-      btn.style.transform = "translateX(0)";
-    }, 80);
-  }, 80);
-}
