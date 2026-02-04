@@ -1,7 +1,10 @@
-const config = {
-  valentineName: "baby",
-  pageTitle: "Baby, will you be my Valentine? 💘",
-  floatingEmojis: ["💖", "💘", "💗", "💞", "🐻", "💓"],
+const CONFIG = {
+  valentineName: "Fatemeh Shokri",
+  pageTitle: "Will You Be My Valentine? 💝",
+  floatingEmojis: {
+    hearts: ["❤️", "💖", "💝", "💗", "💓"],
+    bears: ["🧸", "🐻"]
+  },
   questions: {
     first: {
       text: "Do you like being bothered all the time?",
@@ -10,49 +13,43 @@ const config = {
       secretAnswer: "yes"
     },
     second: {
-      text: "How much do you love me, baby?",
+      text: "How much do you love me?",
       startText: "This much!",
       nextBtn: "Next ❤️"
     },
     third: {
-      text: "Baby, will you be my Valentine this year? 💘",
-      yesBtn: "Yes, of course!",
+      text: "Will you be my Valentine on February 14th, 2025? 🌹",
+      yesBtn: "Yes!",
       noBtn: "No"
     }
   },
   loveMessages: {
-    extreme: "Ohhhhhhh NOH",
-    high: "Ohhhh",
-    normal: "hmmm"
+    extreme: "WOOOOW You love me that much?? 🥰🚀💝",
+    high: "To infinity and beyond! 🚀💝",
+    normal: "And beyond! 🥰"
   },
   celebration: {
-    title: "Baby, Fatemeh Shokri said YES! 💕",
-    message: "You’re stuck with me now, baby. Get ready to be bothered forever. 😈",
-    emojis: "❤️"
-  },
-  celebrationExtras: {
-    catGifUrl: "CAT_GIF_URL_HERE",
-    happyMusicUrl: "HAPPY_MUSIC_URL_HERE",
-    musicVolume: 0.6
+    title: "Yay! I'm the luckiest person in the world! 🎉💝💖💝💓",
+    message: "Now come get your gift, a big warm hug and a huge kiss!",
+    emojis: "🎁💖🤗💝💋❤️💕"
   },
   colors: {
-    backgroundStart: "#ff9a9e",
-    backgroundEnd: "#fad0c4",
-    primary: "#ff4d6d",
-    secondary: "#fff0f6",
-    text: "#4a2c2a"
+    backgroundStart: "#ffafbd",
+    backgroundEnd: "#ffc3a0",
+    buttonBackground: "#ff6b6b",
+    buttonHover: "#ff8787",
+    textColor: "#ff4757"
   },
   animations: {
-    floatingSpeed: 12
+    floatDuration: "15s",
+    floatDistance: "50px",
+    bounceSpeed: "0.5s",
+    heartExplosionSize: 1.5
   },
-  music: {
-    enabled: false,
-    autoplay: false,
-    musicUrl: "",
-    startText: "",
-    stopText: "",
-    volume: 0.5
+  buttonSound: {
+    url: "",
+    volume: 0.8
   }
 };
 
-window.config = config;
+window.VALENTINE_CONFIG = CONFIG;
